@@ -1,4 +1,4 @@
-// # 简单题
+                                        // 简单题
 // # 剑指 Offer 05. 替换空格
 // # 请实现一个函数，把字符串 s 中的每个空格替换成"%20"。
 // golang的string是以UTF-8编码的,而UTF-8是一种1-4字节的可变长字符集，每个字符可用1-4字节 来表示
@@ -87,3 +87,119 @@ func reverseWords(s string) string {
 // // # 剑指 Offer 58 - II. 左旋转字符串
 // # 字符串的左旋转操作是把字符串前面的若干个字符转移到字符串的尾部。请定义一个函数实现字符串左旋转操作的功能。
 // # 比如，输入字符串"abcdefg"和数字2，该函数将返回左旋转两位得到的结果"cdefgab"。
+思路1：切片
+func reverseLeftWords(s string, n int) string {
+    return s[n:] + s[:n]
+}
+
+思路2：遍历数组(n,n+len(s))，添加s(i%len(s))。
+func reverseLeftWords(s string, n int) string {
+    res := []byte{}
+    for i := n; i < n + len(s); i++ {
+        res = append(res, s[i%len(s)])
+    } 
+    return string(res)
+}
+
+                                        // 中等题
+// # 剑指 Offer 20. 表示数值的字符串
+// # 请实现一个函数用来判断字符串是否表示数值（包括整数和小数）。
+// # 例如，字符串"+100"、"5e2"、"-123"、"3.1416"、"-1E-16"、"0123"都表示数值，
+// # 但"12e"、"1a3.14"、"1.2.3"、"+-5"及"12e+5.4"都不是。
+思路：正则表达式
+建议放弃
+
+// # 剑指 Offer 38. 字符串的排列
+// # 输入一个字符串，打印出该字符串中字符的所有排列。
+// # 你可以以任意顺序返回这个字符串数组，但里面不能有重复元素。
+// 思路：dfs+剪枝，x为固定位，先固定0位有abc，再分别固定1位，2位。
+func permutation(s string) []string {
+    res := []string{}
+    bytes := []byte(s)
+    var dfs func(x int)
+    dfs = func(x int) {
+        if x == len(bytes)-1 {
+            res = append(res, string(bytes))
+            return
+        }
+        dic := map[byte]bool{}
+        for i := x; i < len(bytes); i++ {
+            if dic[bytes[i]] {
+                continue
+            }
+            dic[bytes[i]] = true
+            bytes[i],bytes[x] = bytes[x],bytes[i]
+            dfs(x+1)
+            bytes[i],bytes[x] = bytes[x],bytes[i]
+        }
+    }
+    dfs(0)
+    return res
+}
+
+
+
+
+
+// # 剑指 Offer 46. 把数字翻译成字符串
+// # 给定一个数字，我们按照如下规则把它翻译为字符串：0 翻译成 “a” ，
+// # 1 翻译成 “b”，……，11 翻译成 “l”，……，25 翻译成 “z”。一个数字可能有多个翻译。
+// # 请编程实现一个函数，用来计算一个数字有多少种不同的翻译方法。
+
+
+
+// # 剑指Offer 48.
+// # 最长不含重复字符的子字符串
+// # 请从字符串中找出一个最长的不包含重复字符的子字符串，计算该最长子字符串的长度。
+思路1：动态规划
+func lengthOfLongestSubstring(s string) int {
+    dic := map[rune]int{}
+    res, dp := 0, 0
+    for i, str := range s {
+        j, ok := dic[str]
+        if !ok || dp < i-j {
+            dp += 1
+        } else {
+            dp = i - j
+        }
+        dic[str] = i
+        if res < dp {
+            res = dp
+        }
+    }
+    return res
+}
+
+思路2：滑动窗口
+func lengthOfLongestSubstring(s string) int {
+    i,res := -1, 0
+    dic := map[rune]int{}
+    for j,chr := range s {
+        _,ok := dic[chr]
+        if ok {
+            i = max(i,dic[chr])
+        }
+        dic[chr] = j
+        res = max(res,j-i)
+    }
+    return res
+}
+
+func max(a, b int) int {
+    if a > b {
+        return a
+    } else {
+        return b
+    }
+}
+
+
+// # 剑指 Offer 67. 把字符串转换成整数 写一个函数 StrToInt，实现把字符串转换成整数这个功能。
+// # 不能使用 atoi 或者其他类似的库函数。 首先，该函数会根据需要丢弃无用的开头空格字符，直到寻找到第一个非空格的字符为止。
+// # 当我们寻找到的第一个非空字符为正或者负号时，则将该符号与之后面尽可能多的连续数字组合起来，作为该整数的正负号；
+// # 假如第一个非空字符是数字，则直接将其与之后连续的数字字符组合起来，形成整数。
+// # 该字符串除了有效的整数部分之后也可能会存在多余的字符，这些字符可以被忽略，它们对于函数不应该造成影响。
+// # 注意：假如该字符串中的第一个非空格字符不是一个有效整数字符、字符串为空或字符串仅包含空白字符时，
+// # 则你的函数不需要进行转换。 在任何情况下，若函数不能进行有效的转换时，请返回 0。
+// # 说明： 假设我们的环境只能存储 32 位大小的有符号整数，那么其数值范围为 [−231,  231 − 1]。
+// # 如果数值超过这个范围，请返回  INT_MAX (231 − 1) 或 INT_MIN (−231) 。
