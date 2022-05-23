@@ -10,13 +10,14 @@
 func findRepeatNumber(nums []int) int {
 	s := map[int]bool{}
 	for _,num := range nums {
-		if s[num] {
+		if s[num] { 
 			return num
 		}
 		s[num] = true
 	}
 	return -1
 }
+
 //思路2：原地交换
 //# 遍历数组的同时通过交换操作将每个元素的索引和他的值对应。
 func findRepeatNumber(nums []int) int {
@@ -30,28 +31,6 @@ func findRepeatNumber(nums []int) int {
 		}
 	}
 	return -1
-}
-
-//# 剑指 Offer 10- I. 斐波那契数列
-//# 写一个函数，输入 n ，求斐波那契（Fibonacci）数列的第 n 项（即 F(N)）。斐波那契数列的定义如下：
-//# F(0) = 0,   F(1) = 1
-//# F(N) = F(N - 1) + F(N - 2), 其中 N > 1.
-func fib(n int) int {
-	a, b := 0, 1
-	for ; n > 0; n-- {
-		a,b = b, (a+b)%1000000007
-	}
-	return a
-}
-//# 剑指 Offer 10- II. 青蛙跳台阶问题
-//# 一只青蛙一次可以跳上1级台阶，也可以跳上2级台阶。求该青蛙跳上一个 n 级的台阶总共有多少种跳法。
-//# 答案需要取模 1e9+7（1000000007），如计算初始结果为：1000000008，请返回 1。
-func numWays(n int) int {
-	a,b := 1,1
-	for ; n>0; n--{
-		a,b = b,(a+b)%1000000007
-	}
-	return a
 }
 
 //# 剑指 Offer 11. 旋转数组的最小数字
